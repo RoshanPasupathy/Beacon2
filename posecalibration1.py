@@ -36,8 +36,8 @@ dist = np.array([0.10263,-0.17759,0.00053,-0.00006,0.00000 ],dtype=np.float64)
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 500, 0.001)
 objp = np.zeros((6*9,3), np.float32)
 objp[:,:2] = np.mgrid[0:9,0:6].T.reshape(-1,2)
-objp = 26.0 * objp
-axis = np.float32([[78,0,0], [0,78,0], [0,0,-78.0]]).reshape(-1,3)
+objp = 30.0 * objp
+axis = np.float32([[90,0,0], [0,90,0], [0,0,-90.0]]).reshape(-1,3)
 axis2 = np.float32([[50,20,90], [100,10,30], [45,25,-68.0]]).reshape(-1,3)
 
 cap = cv2.VideoCapture(0)
@@ -67,9 +67,11 @@ if ret == True:
 	rvecs, tvecs, inliers = cv2.solvePnPRansac(objp, corners, mtx, dist)
 	print rvecs
 	print "Rmatrix"
-	print cv2.Rodrigues(rvecs)
+	R = cv2.Rodrigues(rvecs)
+	print R
 	print "translation vector"
 	print tvecs
+	np.savez('/home/pi/ip/pose.npz',R=R,tvecs=tvecs,rvecs=rvecs)
 	imgpts, jac = cv2.projectPoints(axis, rvecs, tvecs, mtx, dist)
 	imgpts2, jac2 = cv2.projectPoints(axis, rvecs, tvecs, mtx, dist)
 	print "imgpoints"
